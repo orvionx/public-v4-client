@@ -109,7 +109,7 @@ fi
 # Parse manifest to get file list
 echo "📜 Fetching files listed in manifest.json..."
 jq -r '.[]' "$VERIFY_DIR/manifest.json" | while IFS= read -r FILE; do
-  SAFE_FILE="$(validate_manifest_path "$FILE")"
+  SAFE_FILE="$(validate_manifest_path "$FILE")" || exit 1
 
   FILE_URL="$REMOTE_URL/$SAFE_FILE"
   FILE_PATH="$VERIFY_DIR/$SAFE_FILE"
@@ -120,7 +120,7 @@ jq -r '.[]' "$VERIFY_DIR/manifest.json" | while IFS= read -r FILE; do
   # Download the file
   echo "⬇️ Downloading $SAFE_FILE..."
   wget -q --no-clobber -O "$FILE_PATH" "$FILE_URL"
-done
+done || exit 1
 
 # Compute hash for verification
 echo "🔍 Computing hash..."
